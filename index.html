@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="wrapper">
+        <div id="score">Score : 0</div>
+        <div class="line"></div>
+        <div class="first_block"></div>
+        <div class="second_block"></div>
+    </div>
+    <h1>Hold SPACE and retreat when the line height becomes equal to the distance between blocks</h1>
+
+    <script>
+        var line = document.getElementsByClassName('line');
+        var height = 10;
+
+        var first_block = document.getElementsByClassName('first_block');
+        var second_block = document.getElementsByClassName('second_block');
+
+
+        var distance;
+        var position_right_block;
+        var position_left_block;
+        function generateBlockDistance(){
+             position_left_block = Math.random() * (250 - 0) + 0;
+             position_right_block = Math.random() * (251 - 500) + 500 - 20;
+             distance = position_right_block  - position_left_block ;
+
+            line[0].style.left = position_left_block + 15 + 'px';
+            first_block[0].style.left = position_left_block + 'px';
+            second_block[0].style.left = position_right_block + 'px';
+        };
+
+
+        function resetLine(){
+            height = 10;
+            line[0].style.height = height + 'px';
+            line[0].style.transform= 'rotate(0deg)';
+            line[0].style.bottom = 21.5 +'px';
+            line[0].style.backgroundColor = 'white';
+        }
+        function newGame(){
+            generateBlockDistance();
+            resetLine();
+        }
+
+        function upHeight(e){
+            if(e.keyCode == 32){
+                height += 3;
+                line[0].style.height = height + 'px';
+            }
+        };
+
+        function animate(){
+
+
+            var new_left = position_left_block + height/2 + 20;
+            line[0].style.transform= 'rotate(90deg)';
+            line[0].style.left = new_left + 'px';
+            line[0].style.bottom = (-height/2 + 25) + 'px';
+        }
+
+        var score = 0;
+        var score_block = document.getElementById('score');
+        function win(){
+            line[0].style.backgroundColor = 'green';
+        };
+        function lose() {
+            line[0].style.backgroundColor = 'red';
+        }
+        function checkWin(e){
+            if(e.keyCode == 32){
+                if(height + 20 >= distance && height - distance <=20){
+
+                    score += 50;
+                    score_block.innerHTML = "Score : " + score;
+                    animate();
+                    setTimeout(win, 700);
+                    setTimeout(newGame, 1100);
+                }
+                else{
+
+                    score -= 50;
+                    if(score < 0) {
+                        score = 0;
+                    }
+                    else {
+                        score_block.innerHTML = "Score : " + score;
+                    }
+                    animate();
+                    setTimeout(lose, 700);
+                    setTimeout(newGame, 1100);
+                }
+            }
+
+        }
+
+
+        newGame();
+        document.addEventListener('keydown', upHeight);
+        document.addEventListener('keyup', checkWin);
+    </script>
+</body>
+</html>
